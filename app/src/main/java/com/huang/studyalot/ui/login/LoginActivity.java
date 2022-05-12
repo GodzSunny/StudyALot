@@ -5,6 +5,7 @@ import android.app.Activity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -26,11 +27,13 @@ import com.huang.studyalot.R;
 import com.huang.studyalot.ui.login.LoginViewModel;
 import com.huang.studyalot.ui.login.LoginViewModelFactory;
 import com.huang.studyalot.databinding.ActivityLoginBinding;
+import com.huang.studyalot.ui.menu.MenuActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
     private ActivityLoginBinding binding;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,8 +81,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 setResult(Activity.RESULT_OK);
 
-                //Complete and destroy login activity once successful
-                finish();
+                // TODO: 5/12/2022 Transition user to Menu activity
+                Intent loginActivity = new Intent(getApplicationContext(), MenuActivity.class);
+                startActivity(loginActivity);
             }
         });
 
