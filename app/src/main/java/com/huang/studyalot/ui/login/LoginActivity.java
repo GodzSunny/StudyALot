@@ -1,11 +1,17 @@
 package com.huang.studyalot.ui.login;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -16,6 +22,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AnticipateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,16 +41,46 @@ public class LoginActivity extends AppCompatActivity {
     private LoginViewModel loginViewModel;
     private ActivityLoginBinding binding;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+
+
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
+
+        //SplashScreen
+        splashScreen.setKeepOnScreenCondition(() -> false);
+        splashScreen.setOnExitAnimationListener(splashScreenView -> {
+            final ObjectAnimator slideUp = ObjectAnimator.ofFloat(
+                    splashScreenView, String.valueOf(View.TRANSLATION_Y),0f, splashScreenView.getView().getHeight()
+            );
+            slideUp.setInterpolator(new AnticipateInterpolator());
+            slideUp.setDuration(1000L);
+
+            slideUp.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    splashScreenView.remove();
+                }
+            });
+            slideUp.start();
+        });
+
+        ConstraintLayout constraintLayout = findViewById(R.id.container);
+        //anims
+        AnimationDrawable animationDrawable = (AnimationDrawable) constraintLayout.getBackground();
+        animationDrawable.setEnterFadeDuration(2500);
+        animationDrawable.setExitFadeDuration(5000);
+        animationDrawable.start();
 
         final EditText usernameEditText = binding.username;
         final EditText passwordEditText = binding.password;
